@@ -37,6 +37,10 @@ app.listen(port, (error) => {
 
 // app.use(logRequestStart);
 
+app.get("/server.js", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "..", "build", "service-worker.js"));
+});
+
 app.post("/payment", (req, res) => {
   console.log(req);
 
