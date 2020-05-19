@@ -1,9 +1,9 @@
 import CartActionTypes from "./cart.types";
-import { addItemToCart, removeItemFromCart } from "./cart.utils";
 
 const INITIAL_STATE = {
   hidden: true,
   cartItems: [],
+  error: "",
 };
 
 const cartReducer = (state = INITIAL_STATE, action) => {
@@ -13,27 +13,29 @@ const cartReducer = (state = INITIAL_STATE, action) => {
         ...state,
         hidden: !state.hidden,
       };
-    case CartActionTypes.ADD_ITEM:
+    case CartActionTypes.ADD_ITEM_SUCCESS:
+    case CartActionTypes.REMOVE_ITEM_SUCCESS:
+    case CartActionTypes.CLEAR_ITEM_SUCCESS:
+    case CartActionTypes.LOAD_CART_SUCCESS:
       return {
         ...state,
-        cartItems: addItemToCart(state.cartItems, action.payload),
+        cartItems: action.payload,
+        error: "",
       };
-    case CartActionTypes.REMOVE_ITEM:
+
+    case CartActionTypes.ADD_ITEM_FAILURE:
+    case CartActionTypes.REMOVE_ITEM_FAILURE:
+    case CartActionTypes.CLEAR_ITEM_FAILURE:
+    case CartActionTypes.LOAD_CART_FAILURE:
       return {
         ...state,
-        cartItems: removeItemFromCart(state.cartItems, action.payload),
+        error: action.payload,
       };
+
     case CartActionTypes.CLEAR_CART:
       return {
         ...state,
         cartItems: [],
-      };
-    case CartActionTypes.CLEAR_ITEM_FROM_CART:
-      return {
-        ...state,
-        cartItems: state.cartItems.filter(
-          (cartItem) => cartItem.id !== action.payload.id
-        ),
       };
 
     default:

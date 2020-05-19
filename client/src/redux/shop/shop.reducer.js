@@ -12,12 +12,14 @@ const shopReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isFetching: true,
+        errorMessage: undefined,
       };
     case ShopActionTypes.FETCH_COLLECTION_SUCCESS:
       return {
         ...state,
         isFetching: false,
         collections: action.payload,
+        errorMessage: undefined,
       };
     case ShopActionTypes.FETCH_COLLECTION_FAILURE:
       return {

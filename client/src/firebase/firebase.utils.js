@@ -83,6 +83,67 @@ export const getCurrentUser = () => {
   });
 };
 
+// Assumes that
+export const addItemToFireStoreUserCart = async (currentUser, item) => {
+  //if item set item using and get the whole collection
+  const cartItemRef = firestore
+    .collection("users")
+    .doc(currentUser.id)
+    .collection("cart")
+    .doc(`${item.id}`);
+
+  await cartItemRef.set(item);
+
+  return getCurrentUserCart(currentUser);
+};
+
+export const removeItemFromFireStoreUserCart = async (currentUser, item) => {
+  const cartItemRef = firestore
+    .collection("users")
+    .doc(currentUser.id)
+    .collection("cart")
+    .doc(`${item.id}`);
+  if (item.quantity === 0) {
+    const itemSnapshot = await cartItemRef.get();
+    if (itemSnapshot) {
+      await cartItemRef.delete();
+    }
+  } else {
+    await cartItemRef.set(item);
+  }
+
+  return getCurrentUserCart(currentUser);
+};
+
+export const clearItemFromFireStoreUserCart = async (currentUser, item) => {
+  const cartItemRef = firestore
+    .collection("users")
+    .doc(currentUser.id)
+    .collection("cart")
+    .doc(`${item.id}`);
+
+  const itemSnapshot = await cartItemRef.get();
+  if (itemSnapshot) {
+    await cartItemRef.delete();
+  }
+
+  return getCurrentUserCart(currentUser);
+};
+
+export const getCurrentUserCart = async (currentUser) => {
+  const cartRef = firestore
+    .collection("users")
+    .doc(currentUser.id)
+    .collection("cart");
+  const cartSnapshot = await cartRef.get();
+  let cartItems = cartSnapshot.docs.map((doc) => doc.data());
+  console.log(cartItems);
+  cartItems = cartItems ? cartItems : [];
+  console.log(cartItems);
+
+  return cartItems;
+};
+
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 
